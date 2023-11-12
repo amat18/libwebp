@@ -827,6 +827,12 @@ int main(int argc, const char* argv[]) {
       crop_y = ExUtilGetInt(argv[++c], 0, &parse_error);
       crop_w = ExUtilGetInt(argv[++c], 0, &parse_error);
       crop_h = ExUtilGetInt(argv[++c], 0, &parse_error);
+    } else if (!strcmp(argv[c], "-roi") && c < argc - 4) {
+      config.roi = 1;
+      config.roi_x1 = ExUtilGetInt(argv[++c], 0, &parse_error);
+      config.roi_y1 = ExUtilGetInt(argv[++c], 0, &parse_error);
+      config.roi_x2 = ExUtilGetInt(argv[++c], 0, &parse_error);
+      config.roi_y2 = ExUtilGetInt(argv[++c], 0, &parse_error);
     } else if (!strcmp(argv[c], "-resize") && c + 2 < argc) {
       resize_w = ExUtilGetInt(argv[++c], 0, &parse_error);
       resize_h = ExUtilGetInt(argv[++c], 0, &parse_error);
