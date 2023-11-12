@@ -302,11 +302,32 @@ static void SetupFilterStrength(VP8Encoder* const enc) {
     VP8SegmentInfo* const m = &enc->dqm_[i];
     // We focus on the quantization of AC coeffs.
     const int qstep = kAcTable[clip(m->quant_, 0, 127)] >> 2;
+
+
+    //modmod
+    if(enc->config->roi == 1) {
+      if(i == 0){
+        m->quant_ = 127;
+      } else if(i == 1) {
+        m->quant_ = 0;
+      }
+    }
+
+    
     const int base_strength =
         VP8FilterStrengthFromDelta(enc->filter_hdr_.sharpness_, qstep);
     // Segments with lower complexity ('beta') will be less filtered.
     const int f = base_strength * level0 / (256 + m->beta_);
     m->fstrength_ = (f < FSTRENGTH_CUTOFF) ? 0 : (f > 63) ? 63 : f;
+    
+    //modmod
+    if(enc->config->roi == 1) {
+      if(i == 0){
+        m->fstrength_ = 63;
+      } else if(i == 1) {
+        m->fstrength_ = 0;
+      }
+    }
   }
   // We record the initial strength (mainly for the case of 1-segment only).
   enc->filter_hdr_.level_ = enc->dqm_[0].fstrength_;
