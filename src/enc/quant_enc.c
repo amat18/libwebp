@@ -372,6 +372,13 @@ static void SimplifySegments(VP8Encoder* const enc) {
   for (s1 = 1; s1 < num_segments; ++s1) {    // find similar segments
     const VP8SegmentInfo* const S1 = &enc->dqm_[s1];
     int found = 0;
+
+    //modmod
+    printf("SimplifySegments, img mb %d\n", enc->mb_w_ * enc->mb_h_);
+
+
+
+
     // check if we already have similar segment
     for (s2 = 0; s2 < num_final_segments; ++s2) {
       const VP8SegmentInfo* const S2 = &enc->dqm_[s2];
@@ -389,6 +396,10 @@ static void SimplifySegments(VP8Encoder* const enc) {
     }
   }
   if (num_final_segments < num_segments) {  // Remap
+    
+    //modmod
+    printf("subject to remap\n");
+
     int i = enc->mb_w_ * enc->mb_h_;
     while (i-- > 0) enc->mb_info_[i].segment_ = map[enc->mb_info_[i].segment_];
     enc->segment_hdr_.num_segments_ = num_final_segments;
@@ -397,6 +408,30 @@ static void SimplifySegments(VP8Encoder* const enc) {
       enc->dqm_[i] = enc->dqm_[num_final_segments - 1];
     }
   }
+
+  //modmod: force ROI-specified segmentations
+  if(enc->config_->roi==1){
+    int roii;
+    int max_pix = enc->mb_w_ * enc_mb_h_;
+    int x1=enc->config_->roi_x1 / 16 + 1;
+    int x2=enc->config_->roi_x2 / 16 + 1;
+    int y1=enc->config_->roi_y1 / 16 + 1;
+    int y2=enc->config_->roi_y2 / 16 + 1;
+
+    printf("ROI ON: (%d, %d) - (%d, %d)\n", enc->config_->roi_x1 , enc->config_->roi_x2 , enc->config_->roi_y1, enc->config_->roi_y2 );
+  
+    printf("x1 x2 y1 y2 w x1mbmin x2mbmax: %d %d %d %d %d %d %d\n",x1,x2,y1,y2,enc->mb_w_  , x1 + ((y1-1) * enc->mb_w_ ),   x2 + ((y2-1) * enc->mb_w_ ) );
+
+    for (roii = 1; roii <= max_pix; roii++){
+      if( roii >= x1 + ( ( y1 - 1 ) * enc->mb_w_ ) && roii <= x2 + ( ( y2 - 1 ) * enc->mb_w_ ) && roii % enc->mb_w_ >= x1 % enc->mb_w_ && roii % enc->mb_w_ <= x2 % enc->mb_w_ ){ 
+        enc->mb_info_[i].segment_ = 1;
+      } else {
+        enc->mb_info_[i].segment_ = 0;
+      }        
+    }
+      
+  }
+
 }
 
 void VP8SetSegmentParams(VP8Encoder* const enc, float quality) {
@@ -1396,3 +1431,4 @@ int VP8Decimate(VP8EncIterator* WEBP_RESTRICT const it,
   VP8SetSkip(it, is_skipped);
   return is_skipped;
 }
+
