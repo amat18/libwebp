@@ -150,6 +150,14 @@ struct WebPConfig {
 
   int qmin;               // minimum permissible quality factor
   int qmax;               // maximum permissible quality factor
+
+  //modmod
+  int roi;		  // ROI feature enabled 
+  int roi_x1;             // ROI axes for rectangle shaped 
+  int roi_x2;
+  int roi_y1;
+  int roi_y2;
+
 };
 
 // Enumerate some predefined settings for WebPConfig, depending on the type
@@ -550,3 +558,4 @@ WEBP_EXTERN int WebPEncode(const WebPConfig* config, WebPPicture* picture);
 #endif
 
 #endif  // WEBP_WEBP_ENCODE_H_
+
