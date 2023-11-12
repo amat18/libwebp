@@ -14,6 +14,7 @@
 #include <assert.h>
 #include <math.h>
 #include <stdlib.h>  // for abs()
+#include <stdio.h> // for printf()
 
 #include "src/dsp/quant.h"
 #include "src/enc/vp8i_enc.h"
@@ -412,7 +413,7 @@ static void SimplifySegments(VP8Encoder* const enc) {
   //modmod: force ROI-specified segmentations
   if(enc->config_->roi==1){
     int roii;
-    int max_pix = enc->mb_w_ * enc_mb_h_;
+    int max_pix = enc->mb_w_ * enc->mb_h_;
     int x1=enc->config_->roi_x1 / 16 + 1;
     int x2=enc->config_->roi_x2 / 16 + 1;
     int y1=enc->config_->roi_y1 / 16 + 1;
@@ -424,9 +425,9 @@ static void SimplifySegments(VP8Encoder* const enc) {
 
     for (roii = 1; roii <= max_pix; roii++){
       if( roii >= x1 + ( ( y1 - 1 ) * enc->mb_w_ ) && roii <= x2 + ( ( y2 - 1 ) * enc->mb_w_ ) && roii % enc->mb_w_ >= x1 % enc->mb_w_ && roii % enc->mb_w_ <= x2 % enc->mb_w_ ){ 
-        enc->mb_info_[i].segment_ = 1;
+        enc->mb_info_[roii].segment_ = 1;
       } else {
-        enc->mb_info_[i].segment_ = 0;
+        enc->mb_info_[roii].segment_ = 0;
       }        
     }
       
