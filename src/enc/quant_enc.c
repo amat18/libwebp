@@ -305,7 +305,7 @@ static void SetupFilterStrength(VP8Encoder* const enc) {
 
 
     //modmod
-    if(enc->config->roi == 1) {
+    if(enc->config_->roi == 1) {
       if(i == 0){
         m->quant_ = 127;
       } else if(i == 1) {
@@ -321,7 +321,7 @@ static void SetupFilterStrength(VP8Encoder* const enc) {
     m->fstrength_ = (f < FSTRENGTH_CUTOFF) ? 0 : (f > 63) ? 63 : f;
     
     //modmod
-    if(enc->config->roi == 1) {
+    if(enc->config_->roi == 1) {
       if(i == 0){
         m->fstrength_ = 63;
       } else if(i == 1) {
